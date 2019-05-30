@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html> <head>
+<title>Mi primer mapa web con Leaflet </title>
+<meta charset="utf-8" />
+
+<!-- he descargado el archivo .css y he indicado la ruta relativa. He abierto el link de la presentacion y he guardado la pagina en la carpeta que tengo como directorio  -->
+<link rel="stylesheet" href="./leaflet.css"
+ integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+ crossorigin=""/>
+<!-- he descargado el archivo .js y he indicado la ruta relativa -->
+<script src="./leaflet.js"
+ integrity="sha512-3Wcxp7F9bV2pl+MBgrL6Pz7AJASLpemmQPIiPA0lDs3ImF0z4JuuMIBPeirLbgIuhfH2gJyGWZjvm6M+Zr7L6Q=="
+ crossorigin=""></script>
+
+ <!-- cargar javascript (objeto GeoJSON transformado) -->
+ <script src="./provincias.js"></script>
+
+</head>
+
+<body>
+
+
+<!-- bloque dónde aparecerá el mapa -->
+<div id="bloque_mapa" style="width: 600px; height: 400px;"></div>
+
+ <script>
+
+// definimos el mapa como una varianble y le ajustamos dónde lo queremos ver
+    var mi_mapa2 = L.map('bloque_mapa').setView([40, -2], 5); // L.map es la función que permite crear y manipular el mapa. Set view: coordenadas de mi mapa y nivel de zoom
+
+    var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    	maxZoom: 17,
+    	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    }).addTo(mi_mapa2);
+
+    // Añadimos un WMS (PNOA)
+    var PNOA = L.tileLayer.wms('http://www.idee.es/wms/PNOA/PNOA?', {  //URL WMS
+          layers: 'PNOA',          // capa del WMS
+          format: 'image/png',     // tipo de formato
+          transparent: true,       // activa capa alfa/transparente
+          });
+      PNOA.addTo(mi_mapa2);         // añadir capa al mapa
+
+    //INCLUIR CONTROLES. Así podemos seleccionar capas, modificarlas...
+    //Primero definimos las variables que van a ir dentro de control layers
+    // Hay dos tipos de capas: base (se elige una u otra) y superpuestas (se activan o desactivan)
+      var baseMaps = {                  // variable con apartado de mapas base
+          "OpenStreetMap": OpenTopoMap,  // elemento a incluir y descripción
+          "Stamen": stamen_tms,
+          };
+      var overlayMaps = {              // apartado de capas
+          "Ortotfoto PNOA": PNOA       // elemento a incluir y descripción
+          };
+      var capas = L.control.layers(   // variable con control de capas
+        baseMaps,                     // añadiendo capas base
+        overlayMaps,                  // añadiendo capas
+        {collapsed:true});            // control NO desplegado
+      capas.addTo(mi_mapa2);           // añadimos control de capas al mapa
+
+
+
+</script>
+
+</body>
